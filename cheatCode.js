@@ -13,7 +13,7 @@ cheatCode.prototype = {
 	lastMove : 0,
 	date : new Date(),
 	time : 0,
-	timeInterval : 3,
+	interval : 3,
 	type : null,
 	success : null,
 
@@ -22,7 +22,7 @@ cheatCode.prototype = {
 		var that = this;
 		that.origCode = options.code;
 		that._setContainer();
-		that.timeInterval = that._isSet(options.time) ? options.time : that.timeInterval;
+		that.interval = that._isSet(options.time) ? options.time : that.interval;
 		that.type = that._isSet(options.type) ? options.type : that.type;
 		that.success = that._isSet(options.success) ? options.success : that.success;
 
@@ -36,7 +36,7 @@ cheatCode.prototype = {
 									that.date = new Date();
 									that.time = that.date.getSeconds();
 									if(that.lastMove){
-										if((that.time-that.lastMove) > that.timeInterval){
+										if((that.time-that.lastMove) > that.interval){
 											that._clearMove();
 										}else{
 											that._checkMove(that._getCode(direction));
@@ -56,7 +56,7 @@ cheatCode.prototype = {
 					that.date = new Date();
 					that.time = that.date.getSeconds();
 					if(that.lastMove){
-						if((that.time-that.lastMove) > that.timeInterval){
+						if((that.time-that.lastMove) > that.interval){
 							that._clearMove();
 						}else{
 							that._checkMove(that._getCode(e.keyCode));
