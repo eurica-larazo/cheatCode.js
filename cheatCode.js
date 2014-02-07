@@ -1,6 +1,6 @@
 /* ***** cheatCode.js ******
  *
- * Author: Eurica Larazo
+ * Authors: Eurica Larazo
  *
  * Version 1.0
  * 
@@ -14,8 +14,8 @@ cheatCode.prototype = {
 	date : new Date(),
 	time : 0,
 	timeInterval : 3,
-	key : false,
-	gesture : false,
+	type : null,
+	success : null,
 
 	//punlic methods
 	setCode : function(options){
@@ -23,36 +23,35 @@ cheatCode.prototype = {
 		that.origCode = options.code;
 		that._setContainer();
 		that.timeInterval = that._isSet(options.time) ? options.time : that.timeInterval;
-		that.key = that._isSet(options.key) ? options.key : that.key;
-		that.gesture = that._isSet(options.gesture) ? options.gesture : that.gesture;
+		that.type = that._isSet(options.type) ? options.type : that.type;
+		that.success = that._isSet(options.success) ? options.success : that.success;
 
-		// if(that.gesture){
-		// 	options.target.swipe( {
-		// 			    triggerOnTouchEnd : true,
-		// 			    swipeStatus : function(event, phase, direction, distance){
-		// 			    	if ( phase =="end" ){
-		// 			    		if(that._getCode(direction)){
-		// 							that.date = new Date();
-		// 							that.time = that.date.getSeconds();
-		// 							if(that.lastMove){
-		// 								if((that.time-that.lastMove) > that.timeInterval){
-		// 									that._clearMove();
-		// 								}else{
-		// 									that._checkMove(that._getCode(direction));
-		// 								}
-		// 							}else{
-		// 								that._checkMove(that._getCode(direction));
-		// 							}
-		// 						}
-		// 			    	}
-		// 			    },
-		// 			    allowPageScroll:"vertical",
-		// 			    threshold:75
-		// 			} );
-		// }
-		if(that.key){
+		if(that.type=="gesture"){
+			options.target.swipe( {
+					    triggerOnTouchEnd : true,
+					    swipeStatus : function(event, phase, direction, distance){
+					    	if ( phase =="end" ){
+					    		console.log(direction);
+					    		if(that._getCode(direction)){
+									that.date = new Date();
+									that.time = that.date.getSeconds();
+									if(that.lastMove){
+										if((that.time-that.lastMove) > that.timeInterval){
+											that._clearMove();
+										}else{
+											that._checkMove(that._getCode(direction));
+										}
+									}else{
+										that._checkMove(that._getCode(direction));
+									}
+								}
+					    	}
+					    },
+					    allowPageScroll:"vertical",
+					    threshold:75
+					} );
+		}else if(that.type=="key"){
 			options.target.keyup(function(e){
-				console.log(e.keyCode)
 				if(that._getCode(e.keyCode)){
 					that.date = new Date();
 					that.time = that.date.getSeconds();
@@ -71,7 +70,6 @@ cheatCode.prototype = {
 	},
 
 	//private methods
-	//check if code is complete
 	_isComplete : function(){
 		that = this;
 		for(s in that.code){
@@ -79,7 +77,7 @@ cheatCode.prototype = {
 				return;
 			}
 		}
-		alert("Cheat activated!");
+		that.success();
 		that._clearMove();
 	},
 
@@ -87,9 +85,8 @@ cheatCode.prototype = {
 		that = this;
 		for(s in that.code){
 			if(!that.code[s][1]){
-				console.log(move);
-				if(that.code[s][0]==that.move){
-					that.code[s][1] = that.move;
+				if(that.code[s][0]==move){
+					that.code[s][1] = move;
 					that._isComplete();
 					that.date = new Date();
 					that.lastMove = that.date.getSeconds();
@@ -108,7 +105,6 @@ cheatCode.prototype = {
 	},
 
 	_setContainer : function(){
-		console.log("set");
 		that = this;
 		tmp = new Array();
 		for(s in that.origCode){
@@ -131,18 +127,6 @@ cheatCode.prototype = {
 		}else{
 			return false;
 		}
-
-		// if(key==38)
-		// 	return "U";
-		// else if(key==40)
-		// 	return "D";
-		// else if(key==37)
-		// 	return "L";
-		// else if(key==39)
-		// 	return "R";
-		// else if(key==13)
-		// 	return "T";
-		// return false;
 	},
 
 	_isSet : function(obj){
@@ -152,73 +136,6 @@ cheatCode.prototype = {
 	}
 
 }
-//key U=38, D=40, L=37, R=39, T=13
-var secret = new Array(['U',''],['U',''],['D',''],['D',''],['L',''],['R',''],['T',''],['T','']);
-var lastMove = 0;
-var date = new Date();
-var time = 0;
-$(function(){
-$('body').keyup(function(e){
-if(code = getCode(e.keyCode)){
-date = new Date();
-time = date.getSeconds();
-if(lastMove){
-if((time-lastMove) > 1){
-clearMove();
-}else{
-checkMove(getCode(e.keyCode));
-}
-}else{
-checkMove(getCode(e.keyCode));
-}
-}
-});
-});
-
-function isComplete(){
-for(s in secret){
-if(!secret[s][1]){
-return;
-}
-}
-alert("Cheat activated!");
-clearMove();
-}
-
-function checkMove(move){
-for(s in secret){
-if(!secret[s][1]){
-if(secret[s][0]==move){
-secret[s][1] = move;
-isComplete();
-date = new Date();
-lastMove = date.getSeconds();
-}else{
-clearMove();
-}
-break;
-}
-}
-}
-
-function clearMove(){
-secret = new Array(['U',''],['U',''],['D',''],['D',''],['L',''],['R',''],['T',''],['T','']);
-lastMove = 0;
-}
-
-function getCode(key){
-if(key==38)
-return "U";
-else if(key==40)
-return "D";
-else if(key==37)
-return "L";
-else if(key==39)
-return "R";
-else if(key==13)
-return "T";
-return false;
-}
 
 
 
@@ -226,7 +143,9 @@ return false;
 
 
 
-(function (factory) {
+
+
+$(function (factory) {
     if (typeof define === 'function' && define.amd && define.amd.jQuery) {
         // AMD. Register as anonymous module.
         define(['jquery'], factory);
