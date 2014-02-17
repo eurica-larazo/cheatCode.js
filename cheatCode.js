@@ -32,44 +32,39 @@ cheatCode.prototype = {
 					    swipeStatus : function(event, phase, direction, distance){
 					    	if ( phase =="end" ){
 					    		console.log(direction);
-					    		if(that._getCode(direction)){
-									that.date = new Date();
-									that.time = that.date.getSeconds();
-									if(that.lastMove){
-										if((that.time-that.lastMove) > that.interval){
-											that._clearMove();
-										}else{
-											that._checkMove(that._getCode(direction));
-										}
-									}else{
-										that._checkMove(that._getCode(direction));
-									}
-								}
+					    		that._doEvent(direction);
 					    	}
 					    },
 					    allowPageScroll:"vertical",
-					    threshold:75
+					    threshold:75,
+					    tap: function(first, second, third){
+					    	that._doEvent("tap");
+					    }
 					} );
 		}else if(that.type=="key"){
 			options.target.keyup(function(e){
-				if(that._getCode(e.keyCode)){
-					that.date = new Date();
-					that.time = that.date.getSeconds();
-					if(that.lastMove){
-						if((that.time-that.lastMove) > that.interval){
-							that._clearMove();
-						}else{
-							that._checkMove(that._getCode(e.keyCode));
-						}
-					}else{
-						that._checkMove(that._getCode(e.keyCode));
-					}
-				}
+				that._doEvent(e.keyCode);
 			});
 		}
 	},
 
 	//private methods
+	_doEvent : function(code){
+		if(that._getCode(code)){
+			that.date = new Date();
+			that.time = that.date.getSeconds();
+			if(that.lastMove){
+				if((that.time-that.lastMove) > that.interval){
+					that._clearMove();
+				}else{
+					that._checkMove(that._getCode(code));
+				}
+			}else{
+				that._checkMove(that._getCode(code));
+			}
+		}
+	},
+
 	_isComplete : function(){
 		that = this;
 		for(s in that.code){
@@ -120,7 +115,7 @@ cheatCode.prototype = {
 					110:".",107:"+",109:"-",106:"*",111:"/",189:"-",187:"=",219:"[",221:"]",186:";",222:"'",220:"\\",188:",",190:".",191:"/",
 					37:"leftKey",38:"upKey",39:"rightKey",40:"downKey",32:"space",13:"enter",
 					65:"a",66:"b",67:"c",68:"d",69:"e",70:"f",71:"g",72:"h",73:"i",74:"j",75:"k",76:"l",77:"m",78:"n",79:"o",80:"p",81:"q",82:"r",83:"s",84:"t",85:"u",86:"v",87:"w",88:"x",89:"y",90:"z",
-					up:"up",down:"down",left:"left",right:"right"}
+					up:"up",down:"down",left:"left",right:"right",tap:"tap"}
 
 		if(typeof keys[key] != "undefined"){
 			return keys[key];
