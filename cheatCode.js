@@ -1,6 +1,6 @@
 /* ***** cheatCode.js ******
  *
- * Authors: Eurica Larazo
+ * Author: Eurica Larazo
  *
  * Version 1.0
  * 
@@ -27,11 +27,10 @@ cheatCode.prototype = {
 		that.success = that._isSet(options.success) ? options.success : that.success;
 
 		if(that.type=="gesture"){
-			options.target.swipe( {
+			$(options.target).swipe( {
 					    triggerOnTouchEnd : true,
 					    swipeStatus : function(event, phase, direction, distance){
 					    	if ( phase =="end" ){
-					    		console.log(direction);
 					    		that._doEvent(direction);
 					    	}
 					    },
@@ -42,7 +41,7 @@ cheatCode.prototype = {
 					    }
 					} );
 		}else if(that.type=="key"){
-			options.target.keyup(function(e){
+			$(options.target).keyup(function(e){
 				that._doEvent(e.keyCode);
 			});
 		}
